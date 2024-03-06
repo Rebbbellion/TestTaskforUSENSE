@@ -39,28 +39,26 @@ export class AppComponent {
     [StatusId.Empty, 'gray'],
   ]);
 
-  private getStatusIdByNumberOfMatches(numberOfMatches: number): number {
-    switch (numberOfMatches) {
-      case 3:
-        return StatusId.Strong;
-      case 2:
-        return StatusId.Medium;
-      default:
-        return StatusId.Weak;
+  private getStatusId(numberOfMatches: number = 0): number {
+    if (this.inputText.length === 0) {
+      return StatusId.Empty;
+    } else if (this.inputText.length < this.inputMinLength) {
+      return StatusId.Short;
+    } else if (numberOfMatches === 1) {
+      return StatusId.Weak;
+    } else if (numberOfMatches === 2) {
+      return StatusId.Medium;
+    } else if (numberOfMatches === 3) {
+      return StatusId.Strong;
     }
+    return StatusId.Empty;
   }
 
   public getPasswordStrength(sectionNumber: number): string | undefined {
     const numberOfRegExpMatches = this.regExpTest();
-    if (this.inputText.length === 0) {
-      return this.colors.get(StatusId.Empty);
-    } else if (this.inputText.length < this.inputMinLength) {
-      return this.colors.get(StatusId.Short);
-    } else if (numberOfRegExpMatches >= sectionNumber) {
-      return this.colors.get(
-        this.getStatusIdByNumberOfMatches(numberOfRegExpMatches)
-      );
+    if (numberOfRegExpMatches >= sectionNumber) {
+      return this.colors.get(this.getStatusId(numberOfRegExpMatches));
     }
-    return this.colors.get(StatusId.Empty);
+    return this.colors.get(this.getStatusId());
   }
 }
