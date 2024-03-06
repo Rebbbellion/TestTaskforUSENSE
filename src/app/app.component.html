@@ -1,0 +1,17 @@
+<div class="password">
+  <div class="password-strength">
+    <div
+      class="password-strength__element"
+      *ngFor="let num of [1, 2, 3]"
+      [ngStyle]="{ backgroundColor: getPasswordStrength(num) }"
+    ></div>
+  </div>
+  <input
+    class="password__input"
+    type="text"
+    name="password"
+    id="pass"
+    [(ngModel)]="inputText"
+  />
+  <label for="pass">Password</label>
+</div>

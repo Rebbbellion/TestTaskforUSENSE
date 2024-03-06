@@ -1,0 +1,17 @@
+.password {
+	display:flex;
+	flex-direction: column-reverse;
+	width: 500px;
+}
+.password__input{
+	margin-bottom: 10px;
+}
+.password-strength {
+	display: flex;
+	column-gap: 2px;
+}
+.password-strength__element {
+	width: calc(100%/3);
+	height: 5px;
+	transition: background-color 0.3s;
+}
