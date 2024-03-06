@@ -1,4 +1,5 @@
 <div class="password">
+  <div [ngStyle]="{ color: getPasswordStrength() }">{{ passwordStatus }}</div>
   <div class="password-strength">
     <div
       class="password-strength__element"
