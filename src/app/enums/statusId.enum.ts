@@ -1,5 +1,5 @@
 export const enum StatusId{
-	Weak = 1,
+	Weak,
 	Medium,
 	Strong,
 	Short,

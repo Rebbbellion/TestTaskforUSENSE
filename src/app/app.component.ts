@@ -39,18 +39,6 @@ export class AppComponent {
     [StatusId.Short, 'red'],
     [StatusId.Empty, 'gray'],
   ]);
-
-  private getStatusIdByNumberOfMatches(numberOfMatches: number): number {
-    switch (numberOfMatches) {
-      case 3:
-        return StatusId.Strong;
-      case 2:
-        return StatusId.Medium;
-      default:
-        return StatusId.Weak;
-    }
-  }
-
   private statuses: Map<number, string> = new Map([
     [StatusId.Weak, 'Weak password'],
     [StatusId.Medium, 'Middle strength password'],
@@ -59,22 +47,29 @@ export class AppComponent {
     [StatusId.Empty, 'Field is empty'],
   ]);
 
-  public getPasswordStrength(sectionNumber: number = 0): string | undefined {
-    let numberOfRegExpMatches: number = this.regExpTest();
+  private getStatusId(numberOfMatches: number = 0): number {
     if (this.inputText.length === 0) {
-      this.passwordStatus = this.statuses.get(StatusId.Empty);
-      return this.colors.get(StatusId.Empty);
+      return StatusId.Empty;
     } else if (this.inputText.length < this.inputMinLength) {
-      this.passwordStatus = this.statuses.get(StatusId.Short);
-      return this.colors.get(StatusId.Short);
-    } else if (numberOfRegExpMatches >= sectionNumber) {
-      this.passwordStatus = this.statuses.get(
-        this.getStatusIdByNumberOfMatches(numberOfRegExpMatches)
-      );
-      return this.colors.get(
-        this.getStatusIdByNumberOfMatches(numberOfRegExpMatches)
-      );
+      return StatusId.Short;
+    } else if (numberOfMatches === 1) {
+      return StatusId.Weak;
+    } else if (numberOfMatches === 2) {
+      return StatusId.Medium;
+    } else if (numberOfMatches === 3) {
+      return StatusId.Strong;
     }
-    return this.colors.get(StatusId.Empty);
+    return StatusId.Empty;
+  }
+
+  public getPasswordStrength(sectionNumber: number = 0): string | undefined {
+    const numberOfRegExpMatches = this.regExpTest();
+    this.passwordStatus = this.statuses.get(
+      this.getStatusId(numberOfRegExpMatches)
+    );
+    if (numberOfRegExpMatches >= sectionNumber) {
+      return this.colors.get(this.getStatusId(numberOfRegExpMatches));
+    }
+    return this.colors.get(this.getStatusId());
   }
 }
