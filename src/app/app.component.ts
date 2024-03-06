@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { StatusId } from './enums';
 
 type regExps = {
   letters: RegExp;
@@ -9,7 +10,7 @@ type regExps = {
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent {
   public inputText: string = '';
@@ -21,33 +22,45 @@ export class AppComponent {
     symbols: /[^a-zA-Z0-9\s\u0400-\u04FF]/,
   };
 
-  private numberOfRegExpMatches: number = 0;
-
-  private regExpTest():void {
-    this.numberOfRegExpMatches = 0;
+  private regExpTest(): number {
+    let numberOfRegExpMatches = 0;
     for (const regexp in this.regExps) {
       if (this.regExps[regexp as keyof regExps].test(this.inputText)) {
-        this.numberOfRegExpMatches++;
+        numberOfRegExpMatches++;
       }
+    }
+    return numberOfRegExpMatches;
+  }
+  private colors: Map<number, string> = new Map([
+    [StatusId.Weak, 'red'],
+    [StatusId.Medium, '#eded1a'],
+    [StatusId.Strong, 'lime'],
+    [StatusId.Short, 'red'],
+    [StatusId.Empty, 'gray'],
+  ]);
+
+  private getStatusIdByNumberOfMatches(numberOfMatches: number): number {
+    switch (numberOfMatches) {
+      case 3:
+        return StatusId.Strong;
+      case 2:
+        return StatusId.Medium;
+      default:
+        return StatusId.Weak;
     }
   }
 
-  private colors: Map<number, string> = new Map([
-    [1, 'red'],
-    [2, '#eded1a'],
-    [3, 'lime'],
-    [4, 'gray'],
-  ]);
-
   public getPasswordStrength(sectionNumber: number): string | undefined {
-    this.regExpTest();
+    const numberOfRegExpMatches = this.regExpTest();
     if (this.inputText.length === 0) {
-      return this.colors.get(4);
+      return this.colors.get(StatusId.Empty);
     } else if (this.inputText.length < this.inputMinLength) {
-      return this.colors.get(1);
-    } else if (this.numberOfRegExpMatches >= sectionNumber) {
-      return this.colors.get(this.numberOfRegExpMatches);
+      return this.colors.get(StatusId.Short);
+    } else if (numberOfRegExpMatches >= sectionNumber) {
+      return this.colors.get(
+        this.getStatusIdByNumberOfMatches(numberOfRegExpMatches)
+      );
     }
-    return this.colors.get(4);
+    return this.colors.get(StatusId.Empty);
   }
 }
