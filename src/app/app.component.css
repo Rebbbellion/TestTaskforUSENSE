@@ -1,7 +1,7 @@
 .password {
 	display:flex;
 	flex-direction: column-reverse;
-	width: 500px;
+	max-width: 500px;
 }
 .password__input{
 	margin-bottom: 10px;
